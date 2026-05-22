@@ -1,0 +1,20 @@
+[
+  {
+    "client_id": "frontend-app",
+    "api_key": "key-frontend-valid",
+    "team": "product",
+    "allowed_templates": ["support_answer_v1", "summarize_ticket_v1"]
+  },
+  {
+    "client_id": "internal-sre-bot",
+    "api_key": "key-sre-valid",
+    "team": "platform",
+    "allowed_templates": ["incident_summary_v1", "support_answer_v1"]
+  },
+  {
+    "client_id": "unknown-client",
+    "api_key": "key-disabled",
+    "team": "unknown",
+    "allowed_templates": []
+  }
+]

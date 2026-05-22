@@ -1,0 +1,7 @@
+{
+  "redact_email": true,
+  "redact_api_keys": true,
+  "log_prompt": false,
+  "log_redacted_prompt": true,
+  "fallback_enabled": true
+}

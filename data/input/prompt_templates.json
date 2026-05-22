@@ -1,0 +1,23 @@
+[
+  {
+    "template_id": "support_answer_v1",
+    "version": "1.0.0",
+    "owner_team": "product",
+    "required_variables": ["question", "context"],
+    "template": "Answer the user question using only this context. Context: {context}. Question: {question}"
+  },
+  {
+    "template_id": "summarize_ticket_v1",
+    "version": "1.0.0",
+    "owner_team": "product",
+    "required_variables": ["ticket_text"],
+    "template": "Summarize this support ticket in 3 bullets: {ticket_text}"
+  },
+  {
+    "template_id": "incident_summary_v1",
+    "version": "1.0.0",
+    "owner_team": "platform",
+    "required_variables": ["incident_notes", "service_name"],
+    "template": "Create an incident summary for service {service_name}. Notes: {incident_notes}"
+  }
+]

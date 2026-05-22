@@ -1,0 +1,8 @@
+{
+  "frontend-app": {
+    "max_requests": 2
+  },
+  "internal-sre-bot": {
+    "max_requests": 3
+  }
+}

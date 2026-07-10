@@ -64,7 +64,7 @@ pytest.ini
 Makefile
 README.md
 STATUS.md
-DAY13_NOTES.md
+NOTES.md
 
 data/input/
 data/output/
@@ -158,7 +158,7 @@ These are generated artifacts and should not be committed.
 | Makefile | GitHub Actions, GitLab CI, Jenkins |
 | Pytest | Gateway regression suite and merge gate |
 
-## Interview-Ready Positioning
+## Portfolio-Ready Positioning
 
 For an LLM gateway, I would focus on centralizing access to model providers instead of letting every application call providers directly. The gateway should enforce authentication, authorization, rate limits, prompt template versions, logging, redaction, and provider routing.
 

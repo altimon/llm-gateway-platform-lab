@@ -1,4 +1,4 @@
-# DAY13_NOTES — LLM Gateway
+# NOTES — LLM Gateway
 
 ## 1. LLM Gateway Purpose
 
@@ -18,7 +18,7 @@ Do not overclaim:
 
 Do not claim that gateway work means owning model training or solving all model-safety issues.
 
-Interview answer:
+Portfolio talking point:
 
 ```text
 An LLM gateway centralizes model access and applies platform controls such as auth, authorization, rate limits, prompt template versions, logging, redaction, routing, and audit reporting.
@@ -51,7 +51,7 @@ Do not overclaim:
 
 Authentication does not prove the user request is safe or correct. It only verifies identity.
 
-Interview answer:
+Portfolio talking point:
 
 ```text
 I would verify service or user identity before allowing access to the LLM layer, using API keys, OIDC, IAM, service accounts, or workload identity depending on the platform.
@@ -82,7 +82,7 @@ Do not overclaim:
 
 Authorization does not validate model output quality.
 
-Interview answer:
+Portfolio talking point:
 
 ```text
 After authentication, I would enforce authorization so each service can only use approved templates, models, tenants, or workflows.
@@ -110,7 +110,7 @@ Do not overclaim:
 
 A simple local counter is not production-grade distributed rate limiting.
 
-Interview answer:
+Portfolio talking point:
 
 ```text
 I would enforce rate limits per service, team, tenant, and possibly model/provider to protect budget, reliability, and provider capacity.
@@ -140,7 +140,7 @@ Do not overclaim:
 
 Versioned templates do not guarantee perfect model output.
 
-Interview answer:
+Portfolio talking point:
 
 ```text
 I would treat prompt templates as versioned operational configuration, with IDs and versions logged for traceability.
@@ -170,7 +170,7 @@ Do not overclaim:
 
 Redaction reduces risk but does not eliminate all privacy/security concerns.
 
-Interview answer:
+Portfolio talking point:
 
 ```text
 I would log enough metadata for debugging and audit, but avoid storing raw sensitive prompts. I would use structured logs, redaction, retention policies, and access controls.
@@ -201,7 +201,7 @@ Do not overclaim:
 
 Fallback does not guarantee equivalent answer quality.
 
-Interview answer:
+Portfolio talking point:
 
 ```text
 I would design provider calls with timeouts, retries, circuit breakers, fallback options, and clear observability around provider latency and error rates.
@@ -232,7 +232,7 @@ Do not overclaim:
 
 A report is not full security certification. It is one release-control mechanism.
 
-Interview answer:
+Portfolio talking point:
 
 ```text
 I would add gateway regression tests and CI reports so changes to auth, templates, rate limits, redaction, and fallback behavior are visible before release.

@@ -91,7 +91,7 @@ This local project maps to production patterns such as:
 - Datadog / CloudWatch / OpenSearch / Splunk logs
 - CI/CD release gates
 
-## Interview Positioning
+## Portfolio Positioning
 
 Strong answer:
 
@@ -112,10 +112,10 @@ I do not claim to train LLMs or own model internals. My strength is building and
 After validation:
 
 ```bash
-git add .gitignore Makefile README.md STATUS.md DAY13_NOTES.md pytest.ini requirements.txt src tests data/input
+git add .gitignore Makefile README.md STATUS.md NOTES.md pytest.ini requirements.txt src tests data/input
 git commit -m "Initialize MLOps Day 13 LLM gateway workflow"
 git branch -M main
-gh repo create mlops-day13 --private --source=. --remote=origin --push
+gh repo create llm-gateway-platform-lab --private --source=. --remote=origin --push
 ```
 
 If the repo already exists:

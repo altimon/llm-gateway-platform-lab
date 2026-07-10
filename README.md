@@ -1,115 +1,175 @@
-# MLOps Day 13 — LLM Gateway Simulation
+# LLM Gateway Platform Lab
 
-## Topic
+A local LLM gateway simulation that demonstrates how a platform team can control access to model providers through client authentication, prompt templates, provider simulation, rate limits, policy checks, redaction, trace output, and testable platform guardrails.
 
-Phase 2 — RAG / LLM Infrastructure  
-Day 13 — LLM gateway: rate limits, auth, prompt templates, logging
+This project is not about training or fine-tuning a model. It focuses on the operational control plane around safe, reliable, and auditable LLM access.
 
-## Goal
+## Project goal
 
-This project builds a simplified local LLM gateway simulation using Python, JSON input files, pytest tests, Makefile targets, generated JSON reports, and no paid LLM APIs.
+Demonstrate practical AI platform engineering patterns:
 
-The goal is to understand the platform/SRE responsibilities around controlled LLM access:
+- authenticate gateway clients
+- apply prompt templates consistently
+- route requests through a provider abstraction
+- enforce rate limits
+- redact sensitive request data
+- evaluate policy decisions
+- produce traceable gateway output
+- validate behavior through tests and generated reports
 
-- authentication
-- authorization
-- request validation
-- rate limiting
-- prompt template selection and version tracking
-- provider/model call simulation
-- provider failure fallback
-- logging redaction
-- trace generation
-- CI-friendly gateway policy report
+The lab is local-first and uses simulated providers so the full workflow can run without paid APIs or external model access.
 
-## Why an LLM Gateway Exists
+## Why an LLM gateway exists
 
-Applications should not call model providers directly when production controls are required.
+Teams often start by calling model APIs directly from applications. That works for prototypes, but it becomes hard to operate when multiple applications need shared controls.
 
-A gateway centralizes:
-
-- who can call the model layer
-- which client can use which prompt template
-- request quotas and budget protection
-- prompt template version traceability
-- provider routing and fallback
-- redacted logging
-- audit reporting
-- operational debugging
-
-This is similar to an API gateway or service mesh pattern, but with LLM-specific concerns such as prompt versions, token/cost awareness, provider latency, sensitive input handling, and safety/audit evidence.
-
-## Local Flow
+An LLM gateway creates a controlled platform layer between application teams and model providers.
 
 ```text
-gateway clients
-→ prompt templates
-→ gateway requests
-→ auth check
-→ authorization check
-→ rate limit check
-→ prompt template render
-→ simulated provider response
-→ log redaction
-→ gateway trace
-→ policy report
+application / service
+        |
+        v
+LLM gateway
+  - client authentication
+  - prompt templates
+  - request policy
+  - rate limiting
+  - redaction
+  - provider routing
+  - trace/audit records
+        |
+        v
+model provider or simulator
 ```
 
-## Project Structure
+This pattern is similar to an API gateway or service-mesh control point, but with LLM-specific concerns such as prompt versions, token and cost awareness, sensitive input handling, provider latency, fallback behavior, and safety evidence.
+
+## What this demonstrates
+
+- API-gateway-style control for LLM access
+- client identity and authentication checks
+- request validation and policy enforcement
+- reusable prompt templates
+- provider simulation for deterministic local tests
+- rate-limit enforcement
+- sensitive input redaction
+- trace and report generation
+- testable AI platform guardrails
+- clear separation between application requests and provider execution
+
+## Local flow
 
 ```text
-requirements.txt
-.gitignore
-pytest.ini
-Makefile
-README.md
-STATUS.md
-NOTES.md
-
-data/input/
-data/output/
-reports/
-
 data/input/clients.json
-data/input/prompt_templates.json
 data/input/gateway_requests.json
-data/input/rate_limits.json
+data/input/prompt_templates.json
 data/input/policy_config.json
-
-src/gateway_types.py
-src/gateway_data.py
-src/auth.py
-src/rate_limits.py
-src/prompt_templates.py
-src/redaction.py
-src/provider_simulator.py
-src/gateway_runner.py
-src/gateway_report.py
-
-tests/test_project_bootstrap.py
-tests/test_gateway_data.py
-tests/test_auth.py
-tests/test_rate_limits.py
-tests/test_prompt_templates.py
-tests/test_redaction.py
-tests/test_provider_simulator.py
-tests/test_gateway_runner.py
-tests/test_gateway_report.py
+data/input/rate_limits.json
+        |
+        v
+gateway runner
+        |
+        +--> auth check
+        +--> prompt template rendering
+        +--> rate-limit check
+        +--> policy/redaction
+        +--> provider simulator
+        |
+        v
+data/output/gateway_results.json
+reports/gateway_policy_report.json
+reports/gateway_trace.json
 ```
 
-## Makefile Targets
+Generated output is ignored by git except for placeholder files.
+
+## Repository structure
+
+```text
+data/
+  input/
+    clients.json
+    gateway_requests.json
+    policy_config.json
+    prompt_templates.json
+    rate_limits.json
+  output/
+    .gitkeep
+
+src/
+  auth.py
+  gateway_data.py
+  gateway_report.py
+  gateway_runner.py
+  gateway_types.py
+  prompt_templates.py
+  provider_simulator.py
+  rate_limits.py
+  redaction.py
+
+tests/
+  test_auth.py
+  test_gateway_data.py
+  test_gateway_report.py
+  test_gateway_runner.py
+  test_prompt_templates.py
+  test_provider_simulator.py
+  test_rate_limits.py
+  test_redaction.py
+
+reports/
+  .gitkeep
+
+Makefile
+requirements.txt
+pytest.ini
+README.md
+NOTES.md
+STATUS.md
+```
+
+## Prerequisites
+
+- Python 3.11 or newer
+- make
+- zsh or bash-compatible shell
+
+This project has no dependency on external LLM APIs.
+
+## Quick start
 
 ```bash
-make install
+python3 -m venv .venv
+source .venv/bin/activate
+
+python -m pip install --upgrade pip
+python -m pip install -r requirements.txt
+
 make test
-make clean
-make auth-check
-make rate-limit-check
-make render-prompts
-make run-gateway
-make gateway-report
-make pipeline
+make run
 ```
+
+Or use the Makefile targets directly if your environment is already prepared.
+
+## Makefile targets
+
+Run:
+
+```bash
+make help
+```
+
+Common targets:
+
+| Target | Purpose |
+|---|---|
+| `make test` | run the pytest suite |
+| `make run` | execute the gateway simulation |
+| `make report` | generate gateway reports |
+| `make clean` | remove local generated output |
+| `make status` | show project status, if available |
+
+Target names may vary slightly depending on the local Makefile. Use `make help` as the source of truth.
 
 ## Validation
 
@@ -117,49 +177,83 @@ Run:
 
 ```bash
 make test
-make clean
-make pipeline
-make test
-git status --short --ignored
+sleep 5
 ```
 
-Expected:
+Expected result:
 
-- tests pass
-- generated outputs are recreated by the pipeline
-- generated output/report files are ignored by Git
-- source, tests, config, and input data remain tracked
+```text
+all tests pass
+```
 
-## Generated Artifacts
+This repo has test coverage for:
 
-Pipeline output:
+- valid and invalid client authentication
+- request loading and schema handling
+- prompt template rendering
+- provider simulation
+- rate-limit behavior
+- redaction of sensitive values
+- gateway runner behavior
+- generated report structure
+
+## Expected output
+
+A successful run should produce local generated files such as:
 
 ```text
 data/output/gateway_results.json
-reports/gateway_trace.json
 reports/gateway_policy_report.json
+reports/gateway_trace.json
 ```
 
-These are generated artifacts and should not be committed.
+These files are generated artifacts and should not be committed unless intentionally converted into documented examples.
 
-## Production Mapping
+## Public safety notes
 
-| Local simulation | Production equivalent |
-|---|---|
-| `clients.json` | IAM, OIDC, service accounts, API keys, tenant registry |
-| `rate_limits.json` | API Gateway quotas, Envoy/Kong/NGINX limits, Redis counters |
-| `prompt_templates.json` | Prompt registry, config service, LangSmith prompts, LaunchDarkly |
-| Python auth checks | API Gateway authorizer, OPA, IAM, OAuth/OIDC middleware |
-| Python gateway runner | LLM gateway service, LiteLLM, Portkey, Kong plugin, custom gateway |
-| Local provider simulator | OpenAI, Anthropic, Azure OpenAI, local vLLM/Ollama endpoint |
-| Redaction script | DLP tooling, PII redaction service, logging pipeline filters |
-| JSON logs | Datadog, OpenSearch, CloudWatch, Splunk |
-| JSON reports | CI artifacts, audit reports, dashboards |
-| Makefile | GitHub Actions, GitLab CI, Jenkins |
-| Pytest | Gateway regression suite and merge gate |
+The repo uses fake API-key-like values such as `key-frontend-valid` and `key-sre-valid` as local test fixtures. They are not real credentials.
 
-## Portfolio-Ready Positioning
+The redaction logic intentionally searches for these patterns to prove that API keys and sensitive-looking values are removed from safe logs and trace records.
 
-For an LLM gateway, I would focus on centralizing access to model providers instead of letting every application call providers directly. The gateway should enforce authentication, authorization, rate limits, prompt template versions, logging, redaction, and provider routing.
+## Production mapping
 
-From a platform perspective, this is similar to operating an API gateway or service mesh layer, but with LLM-specific concerns such as prompt versions, token usage, provider latency, safety logging, and auditability. I would not claim to train or tune the LLM itself, but I can build and operate the control plane around safe and reliable model access.
+In a production environment, this pattern would map to:
+
+- identity-aware gateway access
+- tenant-aware rate limits
+- model/provider routing policy
+- prompt-template versioning
+- request and response redaction
+- audit logs and traces
+- fallback and retry policy
+- safety checks before provider calls
+- cost and latency controls
+- centralized observability for model access
+
+This local simulation focuses on the platform control plane, not model training.
+
+## Portfolio talking points
+
+- I built this as a local LLM gateway simulation to show the platform layer around safe model access.
+- The repo demonstrates gateway concerns that matter in production: auth, rate limits, prompt templates, redaction, traceability, and policy checks.
+- It uses provider simulation so behavior is deterministic and testable without depending on external APIs.
+- The redaction and trace paths show how sensitive request data can be controlled before logs or reports are produced.
+- I would not claim this as model-training work; it is platform engineering for reliable and governed LLM usage.
+
+## Limitations
+
+This is a local simulation, not a production LLM gateway.
+
+Production use would require:
+
+- real identity provider integration
+- service-to-service authentication
+- encrypted secrets management
+- persistent audit storage
+- real provider adapters
+- streaming support
+- fallback and retry behavior
+- cost tracking and budgets
+- latency SLOs
+- observability dashboards
+- security review and abuse testing
